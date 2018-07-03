@@ -68,6 +68,7 @@ extension ExpandableTableView: UITableViewDataSource, UITableViewDelegate {
         
         guard let cell = self.cellForRow(at: indexPath) as? ExpandableCell else { return }
         cell.close()
+	cell.setNeedsLayout()
 
     }
     
