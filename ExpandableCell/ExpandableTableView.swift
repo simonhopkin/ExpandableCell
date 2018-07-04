@@ -55,21 +55,32 @@ extension ExpandableTableView: UITableViewDataSource, UITableViewDelegate {
         guard let expandedHeights = delegate.expandableTableView(self, heightsForExpandedRowAt: originalIndexPath) else { return }
         guard expandableProcessor.insert(indexPath: indexPath, expandedCells: expandedCells, expandedHeights: expandedHeights) else { return }
         
+        CATransaction.begin()
+        beginUpdates()
+        CATransaction.setCompletionBlock {
+            guard let cell = self.cellForRow(at: indexPath) as? ExpandableCell else { return }
+            cell.open()
+        }
         self.insertRows(at: expandableProcessor.indexPathsWhere(indexPath: indexPath), with: animation)
-        guard let cell = self.cellForRow(at: indexPath) as? ExpandableCell else { return }
-        cell.open()
-	cell.setNeedsLayout()
+        endUpdates()
+        CATransaction.commit()
+        
+        
     }
     
     private func close(indexPath: IndexPath) {
         expandableProcessor.delete(indexPath: indexPath)
         guard let indexPaths = closeIndexPaths(indexPath: indexPath) else { return }
-        self.deleteRows(at: indexPaths, with: animation)
         
-        guard let cell = self.cellForRow(at: indexPath) as? ExpandableCell else { return }
-        cell.close()
-	cell.setNeedsLayout()
-
+        CATransaction.begin()
+        beginUpdates()
+        CATransaction.setCompletionBlock {
+            guard let cell = self.cellForRow(at: indexPath) as? ExpandableCell else { return }
+            cell.close()
+        }
+        self.deleteRows(at: indexPaths, with: animation)
+        endUpdates()
+        CATransaction.commit()
     }
     
     private func closeIndexPaths(indexPath: IndexPath) -> [IndexPath]? {

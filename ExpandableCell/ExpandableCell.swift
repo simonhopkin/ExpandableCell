@@ -48,6 +48,7 @@ open class ExpandableCell: UITableViewCell {
         UIView.animate(withDuration: 0.3) {
             self.arrowImageView.layer.transform = CATransform3DMakeRotation(CGFloat(Double.pi), 1.0, 0.0, 0.0)
         }
+        self.setNeedsLayout()
     }
 
     func close() {
@@ -55,6 +56,7 @@ open class ExpandableCell: UITableViewCell {
         UIView.animate(withDuration: 0.3) {
             self.arrowImageView.layer.transform = CATransform3DMakeRotation(CGFloat(Double.pi), 0.0, 0.0, 0.0)
         }
+        self.setNeedsLayout()
     }
 
     open func isExpanded() -> Bool {
