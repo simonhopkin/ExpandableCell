@@ -55,16 +55,9 @@ extension ExpandableTableView: UITableViewDataSource, UITableViewDelegate {
         guard let expandedHeights = delegate.expandableTableView(self, heightsForExpandedRowAt: originalIndexPath) else { return }
         guard expandableProcessor.insert(indexPath: indexPath, expandedCells: expandedCells, expandedHeights: expandedHeights) else { return }
         
-        CATransaction.begin()
-        beginUpdates()
-        CATransaction.setCompletionBlock {
-            guard let cell = self.cellForRow(at: indexPath) as? ExpandableCell else { return }
-            cell.open()
-        }
         self.insertRows(at: expandableProcessor.indexPathsWhere(indexPath: indexPath), with: animation)
-        endUpdates()
-        CATransaction.commit()
-        
+        guard let cell = self.cellForRow(at: indexPath) as? ExpandableCell else { return }
+        cell.open()
         
     }
     
